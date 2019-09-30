@@ -1,0 +1,63 @@
+
+Random forest of 10 trees, each constructed while considering 6 random features.
+Out of bag error: 0.314
+
+
+
+Time taken to build model: 1.32 seconds
+Time taken to test model on training data: 0.22 seconds
+
+=== Error on training data ===
+
+Correctly Classified Instances         999               99.9    %
+Incorrectly Classified Instances         1                0.1    %
+Kappa statistic                          0.998 
+Mean absolute error                      0.081 
+Root mean squared error                  0.1285
+Relative absolute error                 16.2    %
+Root relative squared error             25.6905 %
+Total Number of Instances             1000     
+
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 1         0.002      0.998     1         0.999      1        pd
+                 0.998     0          1         0.998     0.999      1        snp
+Weighted Avg.    0.999     0.001      0.999     0.999     0.999      1    
+
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 500   0 |   a = pd
+   1 499 |   b = snp
+
+
+
+=== Stratified cross-validation ===
+
+Correctly Classified Instances         750               75      %
+Incorrectly Classified Instances       250               25      %
+Kappa statistic                          0.5   
+Mean absolute error                      0.3415
+Root mean squared error                  0.4171
+Relative absolute error                 68.3    %
+Root relative squared error             83.4242 %
+Total Number of Instances             1000     
+
+
+=== Detailed Accuracy By Class ===
+
+               TP Rate   FP Rate   Precision   Recall  F-Measure   ROC Area  Class
+                 0.822     0.322      0.719     0.822     0.767      0.82     pd
+                 0.678     0.178      0.792     0.678     0.731      0.82     snp
+Weighted Avg.    0.75      0.25       0.755     0.75      0.749      0.82 
+
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 411  89 |   a = pd
+ 161 339 |   b = snp
+
