@@ -1,0 +1,2865 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>SAAP analysis</title>
+
+<script type='text/javascript' src='/js/getElementsByClassName.js'>
+<!-- http://robertnyman.com -->
+</script>
+<script type="text/javascript" src="/js/overlib/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+
+<script type='text/javascript'>
+<!--
+
+
+function toggle_text(obj) 
+{
+   var text = document.getElementById(obj);
+   if ( text.style.display == 'inline' ) { text.style.display = 'none'; }
+   else { text.style.display = 'inline'; }
+}
+function toggle_text_arrow(obj1, obj2) 
+{
+   var text = document.getElementById(obj1);
+   var arrow = document.getElementById(obj2);
+   if (( text.style.display == 'inline' ) || ( text.style.display == 'block' ))
+   { 
+      text.style.display = 'none'; 
+      arrow.className = 'fliparrow fa fa-toggle-down';
+   }
+   else 
+   { 
+      text.style.display = 'inline'; 
+      arrow.className = 'fliparrow fa fa-toggle-up';
+   }
+}
+function expand_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'block';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].className = 'fliparrow fa fa-toggle-up';
+   }
+}
+
+function collapse_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'none';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].className = 'fliparrow fa fa-toggle-down';
+   }
+}
+
+function fixIE()
+{
+//    document.getElementsByClassName("submit").disabled = false;
+
+    if (document.getElementsByClassName == undefined) 
+    {
+        document.getElementsByClassName = function(className)
+        {
+            var hasClassName = new RegExp("(?:^|\s)" + className + "(?:0\s)");
+            var allElements = document.getElementsByTagName("*");
+            var results = [];
+            
+            var element;
+            for (var i = 0; (element = allElements[i]) != null; i++) 
+            {
+                var elementClass = element.className;
+                if (elementClass && elementClass.indexOf(className) != -1 && 
+                    hasClassName.test(elementClass))
+                {
+                    results.push(element);
+                }
+            }
+            
+            return results;
+        }
+    }
+}
+
+-->
+</script>
+
+<!-- Ajax for Predict button -->
+<script type='text/javascript' src='/saap/dap//predictAjax.js'></script>
+
+<link rel='stylesheet' href='/css/font-awesome/css/font-awesome.min.css' />
+
+<style type='text/css'>
+<!--
+p, td, th, li {  font-family: Helvetica,Arial; }
+
+h1 
+{  text-align: center;
+   font: 24pt Helvetica,Arial
+}
+
+h2 { font: 18pt Helvetica,Arial;      }
+h3 { font: bold 14pt Helvetica,Arial; }
+h4 { font: 12pt Helvetica,Arial;      }
+a  { outline: none;                   }
+
+a span, a:active, a:visited, a:hover 
+{  border: none; 
+   color: #000000;
+   text-decoration: none;
+}
+
+.mutation 
+{  background: #666666;
+   margin: 0em 0em 1em 0em;
+   padding: 2pt;
+}
+
+.mutation td 
+{  color: #FFFFFF;
+   font: 12pt Helvetica, Arial;
+}
+
+.summary .ok      {background: #cccccc;}
+.summary .bad     {background: #FF0000;}
+.summary .unknown {background: #AAAAAA;}
+
+.summary table    
+{  border-collapse: collapse;
+   border: solid 1pt #000000;
+   text-align: center;
+}
+
+.summary td, .summary th 
+{  border: solid 1pt #000000;
+   padding: 2pt;
+   font: 10pt Helvetica,Arial;
+}
+
+.summary th { font: 12pt Helvetica,Arial; }
+
+.summary th a:link, .summary th a:visited, .summary th a:hover, .summary th a:active  
+{  font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.mutantsummary .ok      {background: #00FF00;}
+.mutantsummary .bad     {background: #FF0000;}
+.mutantsummary .unknown {background: #AAAAAA;}
+
+.mutantsummary table    
+{  border-collapse: collapse;
+   border: solid 1pt #000000;
+   text-align: left;
+}
+
+.mutantsummary td, .mutantsummary th 
+{  border: solid 1pt #000000;
+   padding: 2pt;
+   font: 12pt Helvetica,Arial;
+}
+
+.mutantsummary th a:link, .mutantsummary th a:visited, .mutantsummary th a:hover, .mutantsummary th a:active  
+{  font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.footnote 
+{  font: italic 8pt Helvetica,Arial;
+}
+
+.button 
+{  font: bold 12pt Helvetica,Arial;
+   background: #7A96BE;
+   margin: 4pt 0pt;
+   padding: 1pt 4pt 4pt 4pt;
+   border: outset 2pt #000000;
+}
+
+.button a:link, .button a:visited, .button a:hover, .button a:active  
+{  font: bold 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.analysis 
+{  border: 1pt solid #000000;
+   margin: 1em 0 0 0;
+   padding: 0 0 0 0;
+   background: #CCCCCC;
+}
+
+.analysis h3 
+{  margin: 0 0 0 0;
+   padding: 2pt;
+   background: #666666;
+   color: #FFFFFF;
+}
+
+.analysis h4 
+{  margin: 0 0 0 0;
+   padding: 0 2pt 2pt 2pt;
+   background: #aaaaaa;
+   color: #000000;
+   border: solid 1pt #777777;
+}
+
+.analysis .left  { width: 49%; }
+.analysis .right { width: 49%; }
+
+.analysis .bad 
+{  margin: 0;
+   padding: 2pt;
+   background: #eeeeee;
+   border: solid 3px #ff0000;
+}
+
+.analysis .ok  
+{  margin: 0;
+   padding: 2pt;
+   background: #eeeeee;
+   border: solid 3px #eeeeee;
+}
+
+.analysis .unknown  
+{  margin: 0;
+   padding: 2pt;
+   background: #AAAAAA;
+   border-bottom: solid 1pt #7A96BE;
+   border-left: solid 1pt #7A96BE;
+   border-right: solid 1pt #7A96BE;
+}
+
+.analysis p 
+{  margin: 0;
+   padding: 0;
+}
+
+.analysis table { width: 100%; }
+.analysis td    {vertical-align: top; }
+
+.resultsFrame
+{  background: #FFFFFF;
+   border: solid 1px #666666;
+   padding: 1em;
+}
+
+-->
+</style>
+</head>
+<body>
+<!-- <body onload='fixIE();'> -->
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+
+<h1>SAAP Analysis</h1>
+
+<!-- END OF COMMON HEADER -->
+
+
+<!-- INFO ON THE MUTATION -->
+<div class='mutation'>
+<table>
+<tr><td>UniProt Entry:</td><td>P12883</td></tr>
+<tr><td>Mutation:</td><td>E 1555-&gt;G</td></tr>
+</table>
+</div>
+<!-- END OF INFO ON THE MUTATION -->
+
+<!-- BEGIN SUMMARY -->
+<h2>Summary</h2>
+
+<div class='summary'>
+<table>
+    <tr>
+        <th>PDB</th>
+        <th>chain</th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+        onmouseout="return nd();">HBonds</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+        onmouseout="return nd();">Binding</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+        onmouseout="return nd();">BuriedCharge</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces a void in the protein core.');" 
+        onmouseout="return nd();">Voids</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('The site of the mutation is annotated as a feature in UniProtKB/SwissProt.');" 
+        onmouseout="return nd();">SProtFT</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+        onmouseout="return nd();">SurfacePhobic</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native residue was in an interface.');" 
+        onmouseout="return nd();">Interface</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native was a glycine which was adopting backbone torsions not allowed for other amino acids.');" 
+        onmouseout="return nd();">Glycine</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+        onmouseout="return nd();">Clash</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native was a cis-proline.');" 
+        onmouseout="return nd();">CisPro</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces a proline when native residue was in a conformation not accessible to proline.');" 
+        onmouseout="return nd();">Proline</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+        onmouseout="return nd();">CorePhilic</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+        onmouseout="return nd();">Impact</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native residue was a cysteine involved in a disulphide bond.');" 
+        onmouseout="return nd();">SSGeom</a>
+        </th>
+    </tr>
+        <tr><td align='left'><a href='#P4xa4A'>4xa4</a> </td>
+            <td>A</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P4xa4B'>4xa4</a> </td>
+            <td>B</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1A'>5cj1</a> </td>
+            <td>A</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='unknown'>?</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1B'>5cj1</a> </td>
+            <td>B</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='bad'>X</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1C'>5cj1</a> </td>
+            <td>C</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1D'>5cj1</a> </td>
+            <td>D</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='bad'>X</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1E'>5cj1</a> </td>
+            <td>E</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='unknown'>?</td>
+<td class='ok'>&nbsp;</td>
+<td class='bad'>X</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1F'>5cj1</a> </td>
+            <td>F</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1G'>5cj1</a> </td>
+            <td>G</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5cj1H'>5cj1</a> </td>
+            <td>H</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='bad'>X</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+</table>
+<p class='footnote'>Hover over the column titles for an explanation.</p>
+</div>
+
+<!-- END SUMMARY -->
+<!-- BEGIN STRUCTURAL ANALYSIS HEADER -->
+<h2>Structural analysis</h2>
+
+<div style='text-align: center;'>
+<button onclick='expand_all();'>Expand all</button>
+&nbsp;&nbsp; 
+<button onclick='collapse_all();'>Collapse all</button>
+</div>
+
+<!-- END STRUCTURAL ANALYSIS HEADER -->
+
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P4xa4A'>4xa4 Residue A1555 | Structure type: crystal | Resolution: 2.33A | R-factor: 21.90%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P4xa4AHBonds','P4xa4AHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P4xa4ABinding','P4xa4ABindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ABindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4ABinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P4xa4ABuriedCharge','P4xa4ABuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ABuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4ABuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 61.585%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P4xa4AVoids','P4xa4AVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 122.71</b>.<br /> 
+The largest void in the native was 122.71.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P4xa4ASProtFT','P4xa4ASProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ASProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4ASProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P4xa4ASurfacePhobic','P4xa4ASurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ASurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4ASurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 61.585%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P4xa4AInterface','P4xa4AInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 57.628% 
+    while the individual chain had an accessibility of 61.585%, <b>a
+    difference of 3.957%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P4xa4AGlycine','P4xa4AGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P4xa4AClash','P4xa4AClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P4xa4ACisPro','P4xa4ACisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ACisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4ACisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P4xa4AProline','P4xa4AProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P4xa4ACorePhilic','P4xa4ACorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ACorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4ACorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 61.585%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P4xa4AImpact','P4xa4AImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4AImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4AImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P4xa4ASSGeom','P4xa4ASSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4ASSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P4xa4ASSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P4xa4B'>4xa4 Residue B1555 | Structure type: crystal | Resolution: 2.33A | R-factor: 21.90%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P4xa4BHBonds','P4xa4BHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P4xa4BBinding','P4xa4BBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P4xa4BBuriedCharge','P4xa4BBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 58.925%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P4xa4BVoids','P4xa4BVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 136.46</b>.<br /> 
+The largest void in the native was 136.46.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P4xa4BSProtFT','P4xa4BSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P4xa4BSurfacePhobic','P4xa4BSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 58.925%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P4xa4BInterface','P4xa4BInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 49.926% 
+    while the individual chain had an accessibility of 58.925%, <b>a
+    difference of 8.999%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P4xa4BGlycine','P4xa4BGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P4xa4BClash','P4xa4BClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P4xa4BCisPro','P4xa4BCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P4xa4BProline','P4xa4BProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P4xa4BCorePhilic','P4xa4BCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 58.925%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P4xa4BImpact','P4xa4BImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P4xa4BImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P4xa4BSSGeom','P4xa4BSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P4xa4BSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P4xa4BSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1A'>5cj1 Residue A1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1AHBonds','P5cj1AHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1ABinding','P5cj1ABindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ABindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ABinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1ABuriedCharge','P5cj1ABuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ABuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ABuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 52.103%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1AVoids','P5cj1AVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 24.36</b>.<br /> 
+The largest void in the native was 24.36.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1ASProtFT','P5cj1ASProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ASProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='unknown'>
+        <p>An analysis error occurred</p>
+        <p id='P5cj1ASProtFT' class='collapsable' style='display: none'>
+           Accession P12883 not found in SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1ASurfacePhobic','P5cj1ASurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ASurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ASurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 52.103%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1AInterface','P5cj1AInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 42.710% 
+    while the individual chain had an accessibility of 52.103%, <b>a
+    difference of 9.393%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1AGlycine','P5cj1AGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1AClash','P5cj1AClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1ACisPro','P5cj1ACisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ACisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ACisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1AProline','P5cj1AProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1ACorePhilic','P5cj1ACorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ACorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ACorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 52.103%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1AImpact','P5cj1AImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1AImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1AImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1ASSGeom','P5cj1ASSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ASSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1ASSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1B'>5cj1 Residue B1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1BHBonds','P5cj1BHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1BBinding','P5cj1BBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1BBuriedCharge','P5cj1BBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 68.201%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1BVoids','P5cj1BVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 25.76</b>.<br /> 
+The largest void in the native was 25.76.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1BSProtFT','P5cj1BSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1BSurfacePhobic','P5cj1BSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 68.201%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1BInterface','P5cj1BInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='bad'>
+        <p>The residue was involved in an interface</p>
+        <p id='P5cj1BInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 50.497% 
+    while the individual chain had an accessibility of 68.201%, <b>a
+    difference of 17.704%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1BGlycine','P5cj1BGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1BClash','P5cj1BClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1BCisPro','P5cj1BCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1BProline','P5cj1BProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1BCorePhilic','P5cj1BCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 68.201%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1BImpact','P5cj1BImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1BImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1BSSGeom','P5cj1BSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1BSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1BSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1C'>5cj1 Residue C1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1CHBonds','P5cj1CHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1CBinding','P5cj1CBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1CBuriedCharge','P5cj1CBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 55.558%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1CVoids','P5cj1CVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 26.16</b>.<br /> 
+The largest void in the native was 26.16.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1CSProtFT','P5cj1CSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1CSurfacePhobic','P5cj1CSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 55.558%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1CInterface','P5cj1CInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 48.064% 
+    while the individual chain had an accessibility of 55.558%, <b>a
+    difference of 7.494%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1CGlycine','P5cj1CGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1CClash','P5cj1CClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1CCisPro','P5cj1CCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1CProline','P5cj1CProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1CCorePhilic','P5cj1CCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 55.558%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1CImpact','P5cj1CImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1CImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1CSSGeom','P5cj1CSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1CSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1CSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1D'>5cj1 Residue D1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1DHBonds','P5cj1DHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1DBinding','P5cj1DBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1DBuriedCharge','P5cj1DBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 69.087%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1DVoids','P5cj1DVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 15.68</b>.<br /> 
+The largest void in the native was 15.68.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1DSProtFT','P5cj1DSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1DSurfacePhobic','P5cj1DSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 69.087%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1DInterface','P5cj1DInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='bad'>
+        <p>The residue was involved in an interface</p>
+        <p id='P5cj1DInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 51.673% 
+    while the individual chain had an accessibility of 69.087%, <b>a
+    difference of 17.414%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1DGlycine','P5cj1DGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1DClash','P5cj1DClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1DCisPro','P5cj1DCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1DProline','P5cj1DProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1DCorePhilic','P5cj1DCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 69.087%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1DImpact','P5cj1DImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1DImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1DSSGeom','P5cj1DSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1DSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1DSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1E'>5cj1 Residue E1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1EHBonds','P5cj1EHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1EBinding','P5cj1EBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1EBuriedCharge','P5cj1EBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 67.100%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1EVoids','P5cj1EVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 36.80</b>.<br /> 
+The largest void in the native was 36.80.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1ESProtFT','P5cj1ESProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ESProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='unknown'>
+        <p>An analysis error occurred</p>
+        <p id='P5cj1ESProtFT' class='collapsable' style='display: none'>
+           Accession P12883 not found in SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1ESurfacePhobic','P5cj1ESurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ESurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ESurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 67.100%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1EInterface','P5cj1EInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='bad'>
+        <p>The residue was involved in an interface</p>
+        <p id='P5cj1EInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 49.467% 
+    while the individual chain had an accessibility of 67.100%, <b>a
+    difference of 17.633%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1EGlycine','P5cj1EGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1EClash','P5cj1EClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1ECisPro','P5cj1ECisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ECisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ECisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1EProline','P5cj1EProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1ECorePhilic','P5cj1ECorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ECorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1ECorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 67.100%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1EImpact','P5cj1EImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1EImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1EImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1ESSGeom','P5cj1ESSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1ESSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1ESSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1F'>5cj1 Residue F1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1FHBonds','P5cj1FHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1FBinding','P5cj1FBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1FBuriedCharge','P5cj1FBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 67.251%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1FVoids','P5cj1FVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 32.07</b>.<br /> 
+The largest void in the native was 32.07.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1FSProtFT','P5cj1FSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1FSurfacePhobic','P5cj1FSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 67.251%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1FInterface','P5cj1FInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 65.480% 
+    while the individual chain had an accessibility of 67.251%, <b>a
+    difference of 1.771%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1FGlycine','P5cj1FGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1FClash','P5cj1FClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1FCisPro','P5cj1FCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1FProline','P5cj1FProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1FCorePhilic','P5cj1FCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 67.251%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1FImpact','P5cj1FImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1FImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1FSSGeom','P5cj1FSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1FSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1FSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1G'>5cj1 Residue G1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1GHBonds','P5cj1GHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1GBinding','P5cj1GBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1GBuriedCharge','P5cj1GBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 66.876%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1GVoids','P5cj1GVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 20.59</b>.<br /> 
+The largest void in the native was 20.59.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1GSProtFT','P5cj1GSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1GSurfacePhobic','P5cj1GSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 66.876%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1GInterface','P5cj1GInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 58.917% 
+    while the individual chain had an accessibility of 66.876%, <b>a
+    difference of 7.959%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1GGlycine','P5cj1GGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1GClash','P5cj1GClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1GCisPro','P5cj1GCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1GProline','P5cj1GProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1GCorePhilic','P5cj1GCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 66.876%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1GImpact','P5cj1GImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1GImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1GSSGeom','P5cj1GSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1GSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1GSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5cj1H'>5cj1 Residue H1555 | Structure type: crystal | Resolution: 2.10A | R-factor: 21.00%</h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5cj1HHBonds','P5cj1HHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5cj1HBinding','P5cj1HBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5cj1HBuriedCharge','P5cj1HBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: -1</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 67.320%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5cj1HVoids','P5cj1HVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 30.33</b>.<br /> 
+The largest void in the native was 30.33.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5cj1HSProtFT','P5cj1HSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5cj1HSurfacePhobic','P5cj1HSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                 <b>Mutant residue hydrophobicity: 0.16</b><br />
+                 Relative accessibility of native residue: 67.320%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5cj1HInterface','P5cj1HInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='bad'>
+        <p>The residue was involved in an interface</p>
+        <p id='P5cj1HInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 51.421% 
+    while the individual chain had an accessibility of 67.320%, <b>a
+    difference of 15.899%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5cj1HGlycine','P5cj1HGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HGlycine' class='collapsable' style='display: none'>
+           The native residue was a GLU not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5cj1HClash','P5cj1HClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HClash' class='collapsable' style='display: none'>
+           <b>The clash energy was 0.00&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5cj1HCisPro','P5cj1HCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5cj1HProline','P5cj1HProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HProline' class='collapsable' style='display: none'>
+           The mutant residue was a GLY not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5cj1HCorePhilic','P5cj1HCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: -0.62<br />
+                  Mutant residue hydrophobicity: 0.16<br />
+                  Relative accessibility of native residue: 67.320%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5cj1HImpact','P5cj1HImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5cj1HImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 61%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5cj1HSSGeom','P5cj1HSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5cj1HSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5cj1HSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<p>
+<a href='./printpdf.cgi'>[Download Summary PDF]</a>
+<a href='./printpdf.cgi?expand=1'>[Download Expanded PDF]</a>
+</p>
+
+<!-- COMMON FOOTER -->
+
+</body>
+</html>
+

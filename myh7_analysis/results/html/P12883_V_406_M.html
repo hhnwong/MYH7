@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>SAAP analysis</title>
+
+<script type='text/javascript' src='/js/getElementsByClassName.js'>
+<!-- http://robertnyman.com -->
+</script>
+<script type="text/javascript" src="/js/overlib/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+
+<script type='text/javascript'>
+<!--
+
+
+function toggle_text(obj) 
+{
+   var text = document.getElementById(obj);
+   if ( text.style.display == 'inline' ) { text.style.display = 'none'; }
+   else { text.style.display = 'inline'; }
+}
+function toggle_text_arrow(obj1, obj2) 
+{
+   var text = document.getElementById(obj1);
+   var arrow = document.getElementById(obj2);
+   if (( text.style.display == 'inline' ) || ( text.style.display == 'block' ))
+   { 
+      text.style.display = 'none'; 
+      arrow.className = 'fliparrow fa fa-toggle-down';
+   }
+   else 
+   { 
+      text.style.display = 'inline'; 
+      arrow.className = 'fliparrow fa fa-toggle-up';
+   }
+}
+function expand_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'block';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].className = 'fliparrow fa fa-toggle-up';
+   }
+}
+
+function collapse_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'none';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].className = 'fliparrow fa fa-toggle-down';
+   }
+}
+
+function fixIE()
+{
+//    document.getElementsByClassName("submit").disabled = false;
+
+    if (document.getElementsByClassName == undefined) 
+    {
+        document.getElementsByClassName = function(className)
+        {
+            var hasClassName = new RegExp("(?:^|\s)" + className + "(?:0\s)");
+            var allElements = document.getElementsByTagName("*");
+            var results = [];
+            
+            var element;
+            for (var i = 0; (element = allElements[i]) != null; i++) 
+            {
+                var elementClass = element.className;
+                if (elementClass && elementClass.indexOf(className) != -1 && 
+                    hasClassName.test(elementClass))
+                {
+                    results.push(element);
+                }
+            }
+            
+            return results;
+        }
+    }
+}
+
+-->
+</script>
+
+<!-- Ajax for Predict button -->
+<script type='text/javascript' src='/saap/dap//predictAjax.js'></script>
+
+<link rel='stylesheet' href='/css/font-awesome/css/font-awesome.min.css' />
+
+<style type='text/css'>
+<!--
+p, td, th, li {  font-family: Helvetica,Arial; }
+
+h1 
+{  text-align: center;
+   font: 24pt Helvetica,Arial
+}
+
+h2 { font: 18pt Helvetica,Arial;      }
+h3 { font: bold 14pt Helvetica,Arial; }
+h4 { font: 12pt Helvetica,Arial;      }
+a  { outline: none;                   }
+
+a span, a:active, a:visited, a:hover 
+{  border: none; 
+   color: #000000;
+   text-decoration: none;
+}
+
+.mutation 
+{  background: #666666;
+   margin: 0em 0em 1em 0em;
+   padding: 2pt;
+}
+
+.mutation td 
+{  color: #FFFFFF;
+   font: 12pt Helvetica, Arial;
+}
+
+.summary .ok      {background: #cccccc;}
+.summary .bad     {background: #FF0000;}
+.summary .unknown {background: #AAAAAA;}
+
+.summary table    
+{  border-collapse: collapse;
+   border: solid 1pt #000000;
+   text-align: center;
+}
+
+.summary td, .summary th 
+{  border: solid 1pt #000000;
+   padding: 2pt;
+   font: 10pt Helvetica,Arial;
+}
+
+.summary th { font: 12pt Helvetica,Arial; }
+
+.summary th a:link, .summary th a:visited, .summary th a:hover, .summary th a:active  
+{  font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.mutantsummary .ok      {background: #00FF00;}
+.mutantsummary .bad     {background: #FF0000;}
+.mutantsummary .unknown {background: #AAAAAA;}
+
+.mutantsummary table    
+{  border-collapse: collapse;
+   border: solid 1pt #000000;
+   text-align: left;
+}
+
+.mutantsummary td, .mutantsummary th 
+{  border: solid 1pt #000000;
+   padding: 2pt;
+   font: 12pt Helvetica,Arial;
+}
+
+.mutantsummary th a:link, .mutantsummary th a:visited, .mutantsummary th a:hover, .mutantsummary th a:active  
+{  font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.footnote 
+{  font: italic 8pt Helvetica,Arial;
+}
+
+.button 
+{  font: bold 12pt Helvetica,Arial;
+   background: #7A96BE;
+   margin: 4pt 0pt;
+   padding: 1pt 4pt 4pt 4pt;
+   border: outset 2pt #000000;
+}
+
+.button a:link, .button a:visited, .button a:hover, .button a:active  
+{  font: bold 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.analysis 
+{  border: 1pt solid #000000;
+   margin: 1em 0 0 0;
+   padding: 0 0 0 0;
+   background: #CCCCCC;
+}
+
+.analysis h3 
+{  margin: 0 0 0 0;
+   padding: 2pt;
+   background: #666666;
+   color: #FFFFFF;
+}
+
+.analysis h4 
+{  margin: 0 0 0 0;
+   padding: 0 2pt 2pt 2pt;
+   background: #aaaaaa;
+   color: #000000;
+   border: solid 1pt #777777;
+}
+
+.analysis .left  { width: 49%; }
+.analysis .right { width: 49%; }
+
+.analysis .bad 
+{  margin: 0;
+   padding: 2pt;
+   background: #eeeeee;
+   border: solid 3px #ff0000;
+}
+
+.analysis .ok  
+{  margin: 0;
+   padding: 2pt;
+   background: #eeeeee;
+   border: solid 3px #eeeeee;
+}
+
+.analysis .unknown  
+{  margin: 0;
+   padding: 2pt;
+   background: #AAAAAA;
+   border-bottom: solid 1pt #7A96BE;
+   border-left: solid 1pt #7A96BE;
+   border-right: solid 1pt #7A96BE;
+}
+
+.analysis p 
+{  margin: 0;
+   padding: 0;
+}
+
+.analysis table { width: 100%; }
+.analysis td    {vertical-align: top; }
+
+.resultsFrame
+{  background: #FFFFFF;
+   border: solid 1px #666666;
+   padding: 1em;
+}
+
+-->
+</style>
+</head>
+<body>
+<!-- <body onload='fixIE();'> -->
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+
+<h1>SAAP Analysis</h1>
+
+<!-- END OF COMMON HEADER -->
+
+
+<!-- INFO ON THE MUTATION -->
+<div class='mutation'>
+<table>
+<tr><td>UniProt Entry:</td><td>P12883</td></tr>
+<tr><td>Mutation:</td><td>V 406-&gt;M</td></tr>
+</table>
+</div>
+<!-- END OF INFO ON THE MUTATION -->
+
+<!-- BEGIN SUMMARY -->
+<h2>Summary</h2>
+
+<div class='summary'>
+<table>
+    <tr>
+        <th>PDB</th>
+        <th>chain</th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+        onmouseout="return nd();">HBonds</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+        onmouseout="return nd();">Binding</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+        onmouseout="return nd();">BuriedCharge</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces a void in the protein core.');" 
+        onmouseout="return nd();">Voids</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('The site of the mutation is annotated as a feature in UniProtKB/SwissProt.');" 
+        onmouseout="return nd();">SProtFT</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+        onmouseout="return nd();">SurfacePhobic</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native residue was in an interface.');" 
+        onmouseout="return nd();">Interface</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native was a glycine which was adopting backbone torsions not allowed for other amino acids.');" 
+        onmouseout="return nd();">Glycine</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+        onmouseout="return nd();">Clash</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native was a cis-proline.');" 
+        onmouseout="return nd();">CisPro</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduces a proline when native residue was in a conformation not accessible to proline.');" 
+        onmouseout="return nd();">Proline</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+        onmouseout="return nd();">CorePhilic</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+        onmouseout="return nd();">Impact</a>
+        </th>
+        <th><a href="javascript:void(0);" 
+        onmouseover="return overlib('Native residue was a cysteine involved in a disulphide bond.');" 
+        onmouseout="return nd();">SSGeom</a>
+        </th>
+    </tr>
+        <tr><td align='left'><a href='#P5tbyA'>5tby</a>  <a href="javascript:void(0);" 
+        onmouseover="return overlib('The structure has poor resolution. Detailed structural analyses should be interpreted with caution.');" 
+        onmouseout="return nd();"><span style='color: orange;' class='fa fa-warning'></span></a></td>
+            <td>A</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='bad'>X</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+        <tr><td align='left'><a href='#P5tbyB'>5tby</a>  <a href="javascript:void(0);" 
+        onmouseover="return overlib('The structure has poor resolution. Detailed structural analyses should be interpreted with caution.');" 
+        onmouseout="return nd();"><span style='color: orange;' class='fa fa-warning'></span></a></td>
+            <td>B</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='ok'>&nbsp;</td>
+<td class='bad'>X</td>
+<td class='ok'>&nbsp;</td>
+        </tr>
+</table>
+<p class='footnote'>Hover over the column titles for an explanation.</p>
+</div>
+
+<!-- END SUMMARY -->
+<!-- BEGIN STRUCTURAL ANALYSIS HEADER -->
+<h2>Structural analysis</h2>
+
+<div style='text-align: center;'>
+<button onclick='expand_all();'>Expand all</button>
+&nbsp;&nbsp; 
+<button onclick='collapse_all();'>Collapse all</button>
+</div>
+
+<!-- END STRUCTURAL ANALYSIS HEADER -->
+
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5tbyA'>5tby Residue A406 | Structure type: ElectronMicroscopy | Resolution: 20.00A <a href="javascript:void(0);" 
+        onmouseover="return overlib('The structure has poor resolution. Detailed structural analyses should be interpreted with caution.');" 
+        onmouseout="return nd();"><span style='color: orange;' class='fa fa-warning'></span></a></h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5tbyAHBonds','P5tbyAHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyAHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5tbyABinding','P5tbyABindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyABindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyABinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5tbyABuriedCharge','P5tbyABuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyABuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyABuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: 0</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 24.349%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5tbyAVoids','P5tbyAVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyAVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 656.46</b>.<br /> 
+The largest void in the native was 656.46.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5tbyASProtFT','P5tbyASProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyASProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyASProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5tbyASurfacePhobic','P5tbyASurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyASurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyASurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: 0.54<br />
+                 <b>Mutant residue hydrophobicity: 0.26</b><br />
+                 Relative accessibility of native residue: 24.349%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5tbyAInterface','P5tbyAInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyAInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 24.349% 
+    while the individual chain had an accessibility of 24.349%, <b>a
+    difference of 0.000%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5tbyAGlycine','P5tbyAGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyAGlycine' class='collapsable' style='display: none'>
+           The native residue was a VAL not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5tbyAClash','P5tbyAClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyAClash' class='collapsable' style='display: none'>
+           <b>The clash energy was -4.26&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5tbyACisPro','P5tbyACisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyACisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyACisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5tbyAProline','P5tbyAProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyAProline' class='collapsable' style='display: none'>
+           The mutant residue was a MET not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5tbyACorePhilic','P5tbyACorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyACorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyACorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: 0.54<br />
+                  Mutant residue hydrophobicity: 0.26<br />
+                  Relative accessibility of native residue: 24.349%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5tbyAImpact','P5tbyAImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyAImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='bad'>
+        <p>The mutation was at a site flagged as 'highly conserved'.</p>
+        <p id='P5tbyAImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 100%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5tbyASSGeom','P5tbyASSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyASSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5tbyASSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<!-- BEGIN A STRUCTURAL ANALYSIS -->
+<div class='analysis'>
+<h3 id='P5tbyB'>5tby Residue B406 | Structure type: ElectronMicroscopy | Resolution: 20.00A <a href="javascript:void(0);" 
+        onmouseover="return overlib('The structure has poor resolution. Detailed structural analyses should be interpreted with caution.');" 
+        onmouseout="return nd();"><span style='color: orange;' class='fa fa-warning'></span></a></h3>
+<table>
+<colgroup>
+<col class='left' />
+<col class='right' />
+</colgroup>
+<tr>
+    <td>
+        <h4>HBonds
+        <a href="javascript:toggle_text_arrow('P5tbyBHBonds','P5tbyBHBondsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBHBondsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBHBonds' class='collapsable' style='display: none'>
+           The native residue was not involved in a hydrogen bond
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Binding
+        <a href="javascript:toggle_text_arrow('P5tbyBBinding','P5tbyBBindingArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBBindingArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBBinding' class='collapsable' style='display: none'>
+           The residue was not involved in a specific binding interaction
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>BuriedCharge
+        <a href="javascript:toggle_text_arrow('P5tbyBBuriedCharge','P5tbyBBuriedChargeArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBBuriedChargeArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBBuriedCharge' class='collapsable' style='display: none'>
+           <b>Native residue charge: 0</b><br />
+               <b>Mutant residue charge: 0</b><br />
+               Relative accessibility of native residue: 45.580%
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Voids
+        <a href="javascript:toggle_text_arrow('P5tbyBVoids','P5tbyBVoidsArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBVoidsArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBVoids' class='collapsable' style='display: none'>
+           After the mutation <b>the largest void was of size 1194.99</b>.<br /> 
+The largest void in the native was 1194.99.<br /> 
+90% of proteins have no voids &gt;275, but we do not consider a large 
+void to be damaging if the native structure had large voids.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>SProtFT
+        <a href="javascript:toggle_text_arrow('P5tbyBSProtFT','P5tbyBSProtFTArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBSProtFTArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBSProtFT' class='collapsable' style='display: none'>
+           The residue was not annotated as a 'feature' in UniProtKB/SwissProt
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SurfacePhobic
+        <a href="javascript:toggle_text_arrow('P5tbyBSurfacePhobic','P5tbyBSurfacePhobicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBSurfacePhobicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBSurfacePhobic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: 0.54<br />
+                 <b>Mutant residue hydrophobicity: 0.26</b><br />
+                 Relative accessibility of native residue: 45.580%<br /><br />
+                 Hydrophobicity values &lt;0 are hydrophilic and a threshold of 20% relative accessibility is used to define a residue as on the surface.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Interface
+        <a href="javascript:toggle_text_arrow('P5tbyBInterface','P5tbyBInterfaceArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBInterfaceArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBInterface' class='collapsable' style='display: none'>
+           Interfaces are defined by a difference in solvent
+    accessibility between a complex and the individual chain in the crystal structure.<br />
+    In the complex, this residue had a relative accessability of 45.580% 
+    while the individual chain had an accessibility of 45.580%, <b>a
+    difference of 0.000%</b>.<br />
+    A difference of &gt;10% is taken as indicative of an interface residue.<br />
+    Interfaces may be with another protein chain or a ligand.
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>Glycine
+        <a href="javascript:toggle_text_arrow('P5tbyBGlycine','P5tbyBGlycineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBGlycineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBGlycine' class='collapsable' style='display: none'>
+           The native residue was a VAL not a Glycine
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Clash
+        <a href="javascript:toggle_text_arrow('P5tbyBClash','P5tbyBClashArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBClashArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBClash' class='collapsable' style='display: none'>
+           <b>The clash energy was -3.69&nbsp;kcal/mol.</b><br /> 99% of sidechains 
+in real proteins have an energy less than 34.33&nbsp;kcal/mol.<br />Consequently energies 
+&gt;34.33&nbsp;kcal/mol and &lt;50&nbsp;kcal/mol can be considered mild clashes, 
+50-100&nbsp;kcal/mol medium clashes, &gt;100&nbsp;kcal/mol severe clashes. Note 
+that clash energies can be extremely high (&gt;&gt;100000&nbsp;kcal/mol)
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CisPro
+        <a href="javascript:toggle_text_arrow('P5tbyBCisPro','P5tbyBCisProArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBCisProArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBCisPro' class='collapsable' style='display: none'>
+           The native residue was not a cis-proline
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Proline
+        <a href="javascript:toggle_text_arrow('P5tbyBProline','P5tbyBProlineArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBProlineArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBProline' class='collapsable' style='display: none'>
+           The mutant residue was a MET not a Proline
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>CorePhilic
+        <a href="javascript:toggle_text_arrow('P5tbyBCorePhilic','P5tbyBCorePhilicArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBCorePhilicArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified</p>
+        <p id='P5tbyBCorePhilic' class='collapsable' style='display: none'>
+           Native residue hydrophobicity: 0.54<br />
+                  Mutant residue hydrophobicity: 0.26<br />
+                  Relative accessibility of native residue: 45.580%<br /><br />
+                  Hydrophobicity values &lt;0 are hydrophilic.
+        </p>
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>
+        <h4>Impact
+        <a href="javascript:toggle_text_arrow('P5tbyBImpact','P5tbyBImpactArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBImpactArrow' ></span>
+        </a> 
+        </h4>
+        <div class='bad'>
+        <p>The mutation was at a site flagged as 'highly conserved'.</p>
+        <p id='P5tbyBImpact' class='collapsable' style='display: none'>
+           In an alignment of 9 functionally equivalent protein sequences,
+                         <b>the conservation score at this position was 100%.</b><br />
+                         Analysis of the sequences in this alignment defined a threshold of 79% as 
+                         being significantly conserved.<br />Note that since there are &lt;10 sequences in the alignment, this result should be treated with caution!
+        </p>
+        </div>
+    </td>
+    <td>
+        <h4>SSGeom
+        <a href="javascript:toggle_text_arrow('P5tbyBSSGeom','P5tbyBSSGeomArrow')">
+        <span class='fliparrow fa fa-toggle-down ' id='P5tbyBSSGeomArrow' ></span>
+        </a> 
+        </h4>
+        <div class='ok'>
+        <p>No problems identified.</p>
+        <p id='P5tbyBSSGeom' class='collapsable' style='display: none'>
+           The native residue was not a cysteine in a disulphide bond.
+        </p>
+        </div>
+    </td>
+</tr>
+</table>
+</div> <!-- analysis -->
+<!-- END A STRUCTURAL ANALYSIS -->
+<!-- ********************************************************************* -->
+<p>
+<a href='./printpdf.cgi'>[Download Summary PDF]</a>
+<a href='./printpdf.cgi?expand=1'>[Download Expanded PDF]</a>
+</p>
+
+<!-- COMMON FOOTER -->
+
+</body>
+</html>
+

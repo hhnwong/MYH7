@@ -1,0 +1,14 @@
+export CLASSPATH="$WEKA/weka.jar"
+
+echo "Model 1 of 5"
+java weka.classifiers.trees.RandomForest  -t HumVar_500_1.arff   -d HumVar_500_1_RF.model   >HumVar_500_1_RF.out
+echo "Model 2 of 5"
+java weka.classifiers.trees.RandomForest  -t HumVar_500_2.arff   -d HumVar_500_2_RF.model   >HumVar_500_2_RF.out
+echo "Model 3 of 5"
+java weka.classifiers.trees.RandomForest  -t HumVar_500_3.arff   -d HumVar_500_3_RF.model   >HumVar_500_3_RF.out
+echo "Model 4 of 5"
+java weka.classifiers.trees.RandomForest  -t HumVar_500_4.arff   -d HumVar_500_4_RF.model   >HumVar_500_4_RF.out
+echo "Model 5 of 5"
+java weka.classifiers.trees.RandomForest  -t HumVar_500_5.arff   -d HumVar_500_5_RF.model   >HumVar_500_5_RF.out
+
+cat *.out | grep -A 20 Stratified | grep Weighted

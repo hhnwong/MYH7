@@ -1,0 +1,10 @@
+{"SAAPS":
+   { "uniprotac": "NATIVE_RESIDUE,",
+     "resnum": mutant_residue,
+     "native": "RESIDUE_NUMBER,",
+     "mutant": "=",
+     "pdbs"  : [
+{"SAAP-ERROR": "Residue mutant_residue from SwissProt AC (NATIVE_RESIDUE,) did not map to any PDB files in PDBSWS so structure is unknown"}
+      ]
+   }
+}

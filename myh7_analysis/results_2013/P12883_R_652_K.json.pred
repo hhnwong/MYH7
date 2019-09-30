@@ -1,0 +1,10 @@
+Header:  UniProtAC, Nat, Resnum, Mut, Prediction, Confidence
+AvrgALL:    P12883,   R,    652,   K,        SNP, 0.143
+
+****************************************************
+*                                                  *
+*  FINAL PREDICTION: SNP        CONFIDENCE: 0.143  *
+*                                                  *
+*  PD = Pathogenic; SNP = Neutral                  *
+*                                                  *
+****************************************************

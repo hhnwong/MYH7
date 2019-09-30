@@ -1,0 +1,70 @@
+
+Options: -I 20 -K 5 
+
+=== Classifier model (full training set) ===
+
+RandomForest
+
+Bagging with 20 iterations and base learner
+
+weka.classifiers.trees.RandomTree -K 5 -M 1.0 -V 0.001 -S 1 -do-not-check-capabilities
+
+Time taken to build model: 0.61 seconds
+
+Time taken to test model on training data: 0 seconds
+
+=== Error on training data ===
+
+Correctly Classified Instances           7               87.5    %
+Incorrectly Classified Instances         1               12.5    %
+Kappa statistic                          0.75  
+Mean absolute error                      0.3   
+Root mean squared error                  0.3536
+Relative absolute error                 63.1579 %
+Root relative squared error             72.9325 %
+Total Number of Instances                8     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.800    0.000    1.000      0.800    0.889      0.775    1.000     1.000     HCM
+                 1.000    0.200    0.750      1.000    0.857      0.775    1.000     1.000     DCM
+Weighted Avg.    0.875    0.075    0.906      0.875    0.877      0.775    1.000     1.000     
+
+
+=== Confusion Matrix ===
+
+ a b   <-- classified as
+ 4 1 | a = HCM
+ 0 3 | b = DCM
+
+Time taken to perform cross-validation: 0.05 seconds
+
+
+=== Stratified cross-validation ===
+
+Correctly Classified Instances           2               25      %
+Incorrectly Classified Instances         6               75      %
+Kappa statistic                         -0.6   
+Mean absolute error                      0.55  
+Root mean squared error                  0.5815
+Relative absolute error                113.1429 %
+Root relative squared error            116.6237 %
+Total Number of Instances                8     
+
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.400    1.000    0.400      0.400    0.400      -0.600   0.300     0.639     HCM
+                 0.000    0.600    0.000      0.000    0.000      -0.600   0.300     0.337     DCM
+Weighted Avg.    0.250    0.850    0.250      0.250    0.250      -0.600   0.300     0.526     
+
+
+=== Confusion Matrix ===
+
+ a b   <-- classified as
+ 2 3 | a = HCM
+ 3 0 | b = DCM
+

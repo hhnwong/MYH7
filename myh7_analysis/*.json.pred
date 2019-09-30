@@ -1,0 +1,42 @@
+
+saapPred V1.3 (c) 2012-15, UCL, Nouf S. Al Numair, Dr. Andrew C.R. Martin
+Usage: 
+        saapPred uniprotAC native resnum newres
+        [-v [-info]] [-log=logfile] [-json=file] [-printall | -printpdb] 
+        [-pdblimit=n] [-modlimit=n] [-printjson] > prediction.txt
+       
+        -json=file  If a json file is specified, then
+                    saapPred will skip the pipeline analysis
+                    and use given JSON file.
+        -pdblimit   Set the maximum number of PDB chains
+                    to analyze
+        -modlimit   Set the number of Models used in 
+                    pathogencity prediction.
+        -printpdb   Print prediction results from different
+                    PDB/Chain structures
+        -printall   Print prediction results from different
+                    models from each PDB/Chain structure
+        -printjson  Print prediction results in JSON format.
+        -v          Verbose
+        -log        Save all progress/error messages to the specified file
+  
+
+Runs SAAPpred that sequentially runs
+- The analysis pipeline on different numbers of PDB/Chain (-pdblimit)
+           that match a specified uniprot accession.
+- json2csv parses JSON file and converts it to a CSV file containing
+           a first record with column names and following records
+           with pipeline structural analysis data.
+- csv2arff extracts the columns named in the config file from the 
+           CSV file and converts them to an ARFF file.
+- Runs different numbers of predictor models (-modlimit) using 
+           Weka
+- Averages the results to give a final prediction
+
+The uniprotAC is a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified
+in upper, lower or mixed case and using 1-letter or 3-letter code.
+
+The resnum is the UniProt reside number.
+

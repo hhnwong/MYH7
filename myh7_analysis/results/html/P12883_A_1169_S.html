@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>SAAP analysis</title>
+
+<script type='text/javascript' src='/js/getElementsByClassName.js'>
+<!-- http://robertnyman.com -->
+</script>
+<script type="text/javascript" src="/js/overlib/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+
+<script type='text/javascript'>
+<!--
+
+
+function toggle_text(obj) 
+{
+   var text = document.getElementById(obj);
+   if ( text.style.display == 'inline' ) { text.style.display = 'none'; }
+   else { text.style.display = 'inline'; }
+}
+function toggle_text_arrow(obj1, obj2) 
+{
+   var text = document.getElementById(obj1);
+   var arrow = document.getElementById(obj2);
+   if (( text.style.display == 'inline' ) || ( text.style.display == 'block' ))
+   { 
+      text.style.display = 'none'; 
+      arrow.className = 'fliparrow fa fa-toggle-down';
+   }
+   else 
+   { 
+      text.style.display = 'inline'; 
+      arrow.className = 'fliparrow fa fa-toggle-up';
+   }
+}
+function expand_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'block';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].className = 'fliparrow fa fa-toggle-up';
+   }
+}
+
+function collapse_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'none';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].className = 'fliparrow fa fa-toggle-down';
+   }
+}
+
+function fixIE()
+{
+//    document.getElementsByClassName("submit").disabled = false;
+
+    if (document.getElementsByClassName == undefined) 
+    {
+        document.getElementsByClassName = function(className)
+        {
+            var hasClassName = new RegExp("(?:^|\s)" + className + "(?:0\s)");
+            var allElements = document.getElementsByTagName("*");
+            var results = [];
+            
+            var element;
+            for (var i = 0; (element = allElements[i]) != null; i++) 
+            {
+                var elementClass = element.className;
+                if (elementClass && elementClass.indexOf(className) != -1 && 
+                    hasClassName.test(elementClass))
+                {
+                    results.push(element);
+                }
+            }
+            
+            return results;
+        }
+    }
+}
+
+-->
+</script>
+
+<!-- Ajax for Predict button -->
+<script type='text/javascript' src='/saap/dap//predictAjax.js'></script>
+
+<link rel='stylesheet' href='/css/font-awesome/css/font-awesome.min.css' />
+
+<style type='text/css'>
+<!--
+p, td, th, li {  font-family: Helvetica,Arial; }
+
+h1 
+{  text-align: center;
+   font: 24pt Helvetica,Arial
+}
+
+h2 { font: 18pt Helvetica,Arial;      }
+h3 { font: bold 14pt Helvetica,Arial; }
+h4 { font: 12pt Helvetica,Arial;      }
+a  { outline: none;                   }
+
+a span, a:active, a:visited, a:hover 
+{  border: none; 
+   color: #000000;
+   text-decoration: none;
+}
+
+.mutation 
+{  background: #666666;
+   margin: 0em 0em 1em 0em;
+   padding: 2pt;
+}
+
+.mutation td 
+{  color: #FFFFFF;
+   font: 12pt Helvetica, Arial;
+}
+
+.summary .ok      {background: #cccccc;}
+.summary .bad     {background: #FF0000;}
+.summary .unknown {background: #AAAAAA;}
+
+.summary table    
+{  border-collapse: collapse;
+   border: solid 1pt #000000;
+   text-align: center;
+}
+
+.summary td, .summary th 
+{  border: solid 1pt #000000;
+   padding: 2pt;
+   font: 10pt Helvetica,Arial;
+}
+
+.summary th { font: 12pt Helvetica,Arial; }
+
+.summary th a:link, .summary th a:visited, .summary th a:hover, .summary th a:active  
+{  font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.mutantsummary .ok      {background: #00FF00;}
+.mutantsummary .bad     {background: #FF0000;}
+.mutantsummary .unknown {background: #AAAAAA;}
+
+.mutantsummary table    
+{  border-collapse: collapse;
+   border: solid 1pt #000000;
+   text-align: left;
+}
+
+.mutantsummary td, .mutantsummary th 
+{  border: solid 1pt #000000;
+   padding: 2pt;
+   font: 12pt Helvetica,Arial;
+}
+
+.mutantsummary th a:link, .mutantsummary th a:visited, .mutantsummary th a:hover, .mutantsummary th a:active  
+{  font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.footnote 
+{  font: italic 8pt Helvetica,Arial;
+}
+
+.button 
+{  font: bold 12pt Helvetica,Arial;
+   background: #7A96BE;
+   margin: 4pt 0pt;
+   padding: 1pt 4pt 4pt 4pt;
+   border: outset 2pt #000000;
+}
+
+.button a:link, .button a:visited, .button a:hover, .button a:active  
+{  font: bold 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.analysis 
+{  border: 1pt solid #000000;
+   margin: 1em 0 0 0;
+   padding: 0 0 0 0;
+   background: #CCCCCC;
+}
+
+.analysis h3 
+{  margin: 0 0 0 0;
+   padding: 2pt;
+   background: #666666;
+   color: #FFFFFF;
+}
+
+.analysis h4 
+{  margin: 0 0 0 0;
+   padding: 0 2pt 2pt 2pt;
+   background: #aaaaaa;
+   color: #000000;
+   border: solid 1pt #777777;
+}
+
+.analysis .left  { width: 49%; }
+.analysis .right { width: 49%; }
+
+.analysis .bad 
+{  margin: 0;
+   padding: 2pt;
+   background: #eeeeee;
+   border: solid 3px #ff0000;
+}
+
+.analysis .ok  
+{  margin: 0;
+   padding: 2pt;
+   background: #eeeeee;
+   border: solid 3px #eeeeee;
+}
+
+.analysis .unknown  
+{  margin: 0;
+   padding: 2pt;
+   background: #AAAAAA;
+   border-bottom: solid 1pt #7A96BE;
+   border-left: solid 1pt #7A96BE;
+   border-right: solid 1pt #7A96BE;
+}
+
+.analysis p 
+{  margin: 0;
+   padding: 0;
+}
+
+.analysis table { width: 100%; }
+.analysis td    {vertical-align: top; }
+
+.resultsFrame
+{  background: #FFFFFF;
+   border: solid 1px #666666;
+   padding: 1em;
+}
+
+-->
+</style>
+</head>
+<body>
+<!-- <body onload='fixIE();'> -->
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+
+<h1>SAAP Analysis</h1>
+
+<!-- END OF COMMON HEADER -->
+
+
+<!-- INFO ON THE MUTATION -->
+<div class='mutation'>
+<table>
+<tr><td>UniProt Entry:</td><td>P12883</td></tr>
+<tr><td>Mutation:</td><td>A 1169-&gt;S</td></tr>
+</table>
+</div>
+<!-- END OF INFO ON THE MUTATION -->
+
+<h2>Error</h2>
+<p>No crystal structures could be analyzed:</p>
+<p>Residue 1169 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</p>
+<p>
+<a href='./printpdf.cgi'>[Download Summary PDF]</a>
+<a href='./printpdf.cgi?expand=1'>[Download Expanded PDF]</a>
+</p>
+
+<!-- COMMON FOOTER -->
+
+</body>
+</html>
+

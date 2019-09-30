@@ -1,0 +1,353 @@
+nohup: ignoring input
+
+
+Analyzing mutation: import pandas as -> pd
+-----------------------------------------
+
+
+
+Analyzing mutation: import re  -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: def extract_mutants(df, column_name): -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   def extract_mutants(df, column_name):  > results2013/def_extract_mutants(df,_column_name):_.json'
+
+
+Analyzing mutation: """   -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: Here I am -> trying
+-----------------------------------------
+
+
+
+Analyzing mutation: We import the -> pandas
+-----------------------------------------
+
+
+
+Analyzing mutation: The df reads -> the
+-----------------------------------------
+
+
+
+Analyzing mutation: """   -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: result=list() #List of -> native
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   result=list() #List of native > results2013/result=list()_#List_of_native.json'
+
+
+Analyzing mutation: pattern=re.compile("(\w)(\d+)(\w)")   -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   pattern=re.compile("(\w)(\d+)(\w)")    > results2013/pattern=re.compile("(\w)(\d+)(\w)")___.json'
+
+
+Analyzing mutation: for i, line -> in
+-----------------------------------------
+
+
+
+Analyzing mutation: if not pd.isnull(line): -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   if not pd.isnull(line):  > results2013/if_not_pd.isnull(line):_.json'
+
+
+Analyzing mutation: matches = re.findall(pattern, -> line)
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   matches = re.findall(pattern, line) > results2013/matches_=_re.findall(pattern,_line).json'
+
+
+Analyzing mutation: if len(matches) == -> 1:
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   if len(matches) == 1: > results2013/if_len(matches)_==_1:.json'
+
+
+Analyzing mutation: match = matches[0] -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: if (len(match)) == -> 3:
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   if (len(match)) == 3: > results2013/if_(len(match))_==_3:.json'
+
+
+Analyzing mutation: result.append(match[0] + ' -> '
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   result.append(match[0] + ' ' > results2013/result.append(match[0]_+_'_'.json'
+
+
+Analyzing mutation: return result  -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: def main(file,sheet_name, column_name, -> accession_code):
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   def main(file,sheet_name, column_name, accession_code): > results2013/def_main(file,sheet_name,_column_name,_accession_code):.json'
+
+
+Analyzing mutation: df = pd.ExcelFile(file).parse(sheet_name) -> #Read
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   df = pd.ExcelFile(file).parse(sheet_name) #Read > results2013/df_=_pd.ExcelFile(file).parse(sheet_name)_#Read.json'
+
+
+Analyzing mutation: results = extract_mutants(df,column_name) -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   results = extract_mutants(df,column_name)  > results2013/results_=_extract_mutants(df,column_name)_.json'
+
+
+Analyzing mutation: for result in -> results:
+-----------------------------------------
+
+
+
+Analyzing mutation: print(accession_code, ' ', -> result)
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   print(accession_code, ' ', result) > results2013/print(accession_code,_'_',_result).json'
+
+
+Analyzing mutation: if __name__ == -> "__main__":
+-----------------------------------------
+
+
+
+Analyzing mutation: """   -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: """   -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: import argparse  -> 
+-----------------------------------------
+
+
+SAAP UniProt Pipeline (c) 2011, UCL, Dr. Andrew C.R. Martin
+Usage: 
+uniprot_pipeline [-v [-info]] [-limit=n] uniprotAC native resnum newres
+                 -v     Verbose
+                 -info  Used with -v to get pipeline plugins 
+                        to report their info strings
+                 -limit Set the maximum number of PDB chains
+                        to analyze
+
+Runs the SAAP analysis pipeline on each PDB chain that matches a
+specified uniprot accession.
+
+uniprotAC us a UniProt accession (e.g. P69905)
+
+The native and mutant residues (native, newres) may be specified in 
+upper, lower or mixed case and using 1-letter or 3-letter code.
+
+
+
+Analyzing mutation: parser = argparse.ArgumentParser() -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   parser = argparse.ArgumentParser()  > results2013/parser_=_argparse.ArgumentParser()_.json'
+
+
+Analyzing mutation: parser.add_argument("file", help="file to -> analyze",
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   parser.add_argument("file", help="file to analyze", > results2013/parser.add_argument("file",_help="file_to_analyze",.json'
+
+
+Analyzing mutation: parser.add_argument("sheet_name", help ="sheet -> name",
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   parser.add_argument("sheet_name", help ="sheet name", > results2013/parser.add_argument("sheet_name",_help_="sheet_name",.json'
+
+
+Analyzing mutation: parser.add_argument("column_name", help="column name", -> type=str)
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   parser.add_argument("column_name", help="column name", type=str) > results2013/parser.add_argument("column_name",_help="column_name",_type=str).json'
+
+
+Analyzing mutation: parser.add_argument("accession_code", help="accession code", -> type=str)
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   parser.add_argument("accession_code", help="accession code", type=str) > results2013/parser.add_argument("accession_code",_help="accession_code",_type=str).json'
+
+
+Analyzing mutation: args = parser.parse_args() -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   args = parser.parse_args()  > results2013/args_=_parser.parse_args()_.json'
+
+
+Analyzing mutation: main(args.file,args.sheet_name,args.column_name,args.accession_code)   -> 
+-----------------------------------------
+
+sh: -c: line 0: syntax error near unexpected token `('
+sh: -c: line 0: `/home/bsm/martin/SAAP/server/uniprotPipeline.pl -v   main(args.file,args.sheet_name,args.column_name,args.accession_code)    > results2013/main(args.file,args.sheet_name,args.column_name,args.accession_code)___.json'

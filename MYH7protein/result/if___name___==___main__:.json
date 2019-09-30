@@ -1,0 +1,10 @@
+{"SAAPS":
+   { "uniprotac": "IF",
+     "resnum": ==,
+     "native": "__NAME__",
+     "mutant": "__MAIN__:",
+     "pdbs"  : [
+{"SAAP-ERROR": "Residue == from SwissProt AC (IF) did not map to any PDB files in PDBSWS so structure is unknown"}
+      ]
+   }
+}

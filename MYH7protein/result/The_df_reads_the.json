@@ -1,0 +1,10 @@
+{"SAAPS":
+   { "uniprotac": "THE",
+     "resnum": reads,
+     "native": "DF",
+     "mutant": "THE",
+     "pdbs"  : [
+{"SAAP-ERROR": "Residue reads from SwissProt AC (THE) did not map to any PDB files in PDBSWS so structure is unknown"}
+      ]
+   }
+}

@@ -1,0 +1,10 @@
+{"SAAPS":
+   { "uniprotac": "P12883",
+     "resnum": 1045,
+     "native": "R",
+     "mutant": "C",
+     "pdbs"  : [
+{"SAAP-ERROR": "Residue 1045 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown"}
+      ]
+   }
+}

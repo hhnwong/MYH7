@@ -1,0 +1,10 @@
+{"SAAPS":
+   { "uniprotac": "FOR",
+     "resnum": line,
+     "native": "I,",
+     "mutant": "IN",
+     "pdbs"  : [
+{"SAAP-ERROR": "Residue line from SwissProt AC (FOR) did not map to any PDB files in PDBSWS so structure is unknown"}
+      ]
+   }
+}

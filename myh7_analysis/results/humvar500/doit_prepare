@@ -1,0 +1,9 @@
+DATA=humVar_withNoErrorsNoMissing_PD50pctSNP50pct.key.header.csv
+INPUTS=inputs.txt
+
+csv2arff -v -norm -limit=500 $INPUTS dataset $DATA >HumVar_500_1.arff
+csv2arff -v -norm -limit=500 $INPUTS dataset $DATA >HumVar_500_2.arff
+csv2arff -v -norm -limit=500 $INPUTS dataset $DATA >HumVar_500_3.arff
+csv2arff -v -norm -limit=500 $INPUTS dataset $DATA >HumVar_500_4.arff
+csv2arff -v -norm -limit=500 $INPUTS dataset $DATA >HumVar_500_5.arff
+

@@ -1,0 +1,1139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+   "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+<head>
+<title>SAAP analysis</title>
+
+<script type='text/javascript' src='/js/getElementsByClassName.js'>
+<!-- http://robertnyman.com -->
+</script>
+<script type="text/javascript" src="/js/overlib/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+
+<script type='text/javascript'>
+<!--
+function toggle_text(obj) 
+{
+   var text = document.getElementById(obj);
+   if ( text.style.display == 'inline' ) { text.style.display = 'none'; }
+   else { text.style.display = 'inline'; }
+}
+function toggle_text_arrow(obj1, obj2) 
+{
+   var text = document.getElementById(obj1);
+   var arrow = document.getElementById(obj2);
+   if (( text.style.display == 'inline' ) || ( text.style.display == 'block' ))
+   { 
+      text.style.display = 'none'; 
+      arrow.src = 'down.gif';
+   }
+   else 
+   { 
+      text.style.display = 'inline'; 
+      arrow.src = 'up.gif';
+   }
+}
+function expand_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'block';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].src = 'up.gif';
+   }
+}
+function collapse_all()
+{
+   var tags = document.getElementsByClassName('collapsable');
+   for(var tag=0; tag<tags.length; tag++)
+   {
+      tags[tag].style.display = 'none';
+   }
+
+   var arrows = document.getElementsByClassName('fliparrow');
+   for(var tag=0; tag<arrows.length; tag++)
+   {
+      arrows[tag].src = 'down.gif';
+   }
+}
+function fixIE()
+{
+   if (document.getElementsByClassName == undefined) 
+   {
+      document.getElementsByClassName = function(className)
+      {
+         var hasClassName = new RegExp("(?:^|\s)" + className + "(?:0\s)");
+         var allElements = document.getElementsByTagName("*");
+         var results = [];
+
+         var element;
+         for (var i = 0; (element = allElements[i]) != null; i++) 
+         {
+            var elementClass = element.className;
+            if (elementClass && elementClass.indexOf(className) != -1 && 
+                hasClassName.test(elementClass))
+            {
+               results.push(element);
+            }
+         }
+
+         return results;
+      }
+   }
+}
+
+-->
+</script>
+
+<style type='text/css'>
+<!--
+p, td, th, li 
+{
+   font-family: Helvetica,Arial;
+}
+h1 
+{
+   text-align: center;
+   font: 24pt Helvetica,Arial
+}
+h2 
+{
+   font: 18pt Helvetica,Arial
+}
+h3 
+{
+   font: bold 14pt Helvetica,Arial
+}
+h4 
+{
+   font: 12pt Helvetica,Arial
+}
+a img, a:active, a:visited, a:hover 
+{
+   border: none; vertical-align: top
+}
+a 
+{ 
+   outline: none; 
+}
+
+.mutation 
+{
+   background: #666666;
+   margin: 0em 0em 1em 0em;
+   padding: 2pt;
+}
+.mutation td 
+{
+  color: #FFFFFF;
+  font: 12pt Helvetica, Arial;
+}
+
+.summary .ok   {background: #00FF00;}
+.summary .bad  {background: #FF0000;}
+.summary .unknown  {background: #AAAAAA;}
+.summary table {border-collapse: collapse;
+                border: solid 1pt #000000;
+                text-align: center;
+}
+.summary td, .summary th 
+{
+   border: solid 1pt #000000;
+   padding: 2pt;
+   font: 10pt Helvetica,Arial;
+}
+.summary th 
+{
+   font: 12pt Helvetica,Arial;
+}
+.summary th a:link, .summary th a:visited, .summary th a:hover, .summary th a:active  
+{
+   font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+
+.mutantsummary
+{
+  padding: 0pt 0pt 20pt 0pt;
+}
+
+.mutantsummary .ok   {background: #00FF00;}
+.mutantsummary .bad  {background: #FF0000;}
+.mutantsummary .unknown  {background: #AAAAAA;}
+.mutantsummary table {border-collapse: collapse;
+                border: solid 1pt #000000;
+                text-align: left;
+}
+.mutantsummary td, .mutantsummary th 
+{
+   border: solid 1pt #000000;
+   padding: 2pt;
+   font: 12pt Helvetica,Arial;
+}
+.mutantsummary th a:link, .mutantsummary th a:visited, .mutantsummary th a:hover, .mutantsummary th a:active  
+{
+   font: 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+
+
+
+.footnote 
+{ 
+   font: italic 8pt Helvetica,Arial;
+}
+
+.button 
+{
+   font: bold 12pt Helvetica,Arial;
+   background: #7A96BE;
+   margin: 4pt 0pt;
+   padding: 1pt 4pt 4pt 4pt;
+   border: outset 2pt #000000;
+}
+.button a:link, .button a:visited, .button a:hover, .button a:active  
+{
+   font: bold 12pt Helvetica,Arial;
+   color: #000000;
+   text-decoration: none;
+}
+
+.analysis 
+{
+   border: 1pt solid #000000;
+   margin: 1em 0 0 0;
+   padding: 0 0 0 0;
+   background: #CCCCCC;
+}
+
+.analysis h3 {margin: 0 0 0 0;
+              padding: 2pt;
+              background: #666666;
+              color: #FFFFFF;
+}
+.analysis h4 {margin: 0 0 0 0;
+              padding: 0 2pt 2pt 2pt;
+              background: #7A96BE;
+              color: #FFFFFF;
+              border-top: solid 1pt #7A96BE;
+              border-left: solid 1pt #7A96BE;
+              border-right: solid 1pt #7A96BE;
+}
+.analysis .left { width: 49%;
+}
+.analysis .right { width: 49%;
+}
+.analysis .bad {margin: 0;
+                padding: 2pt;
+                background: #FF7777;
+                border-bottom: solid 1pt #7A96BE;
+                border-left: solid 1pt #7A96BE;
+                border-right: solid 1pt #7A96BE;
+}
+.analysis .ok  {margin: 0;
+                padding: 2pt;
+                background: #AAFFAA;
+                border-bottom: solid 1pt #7A96BE;
+                border-left: solid 1pt #7A96BE;
+                border-right: solid 1pt #7A96BE;
+}
+.analysis .unknown  {margin: 0;
+                padding: 2pt;
+                background: #AAAAAA;
+                border-bottom: solid 1pt #7A96BE;
+                border-left: solid 1pt #7A96BE;
+                border-right: solid 1pt #7A96BE;
+}
+.analysis p {margin: 0;
+             padding: 0;
+}
+.analysis table {width: 100%;
+}
+.analysis td {vertical-align: top;
+}
+
+-->
+</style>
+</head>
+<body>
+<!-- <body onload='fixIE();'> -->
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+
+<h1>SAAP Analysis</h1>
+
+<!-- END OF COMMON HEADER -->
+
+<div class='mutation'>
+<table>
+<tr><td>UniProt Entry:</td><td>P12883</td></tr>
+</table>
+</div>
+<div class='mutantsummary'>
+<table>
+<tr><th>Mutant</th><th>Structures</th><th>Effects</th><th>JSON</th></tr>
+<tr>
+    <td><a href='results/P12883_A_100_T.html'>A 100 -&gt; T</a></td>
+    <td>4</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (4)</a> </td>
+    <td>[<a href='results/P12883_A_100_T.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_143_G.html'>R 143 -&gt; G</a></td>
+    <td>4</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (3)</a> </td>
+    <td>[<a href='results/P12883_R_143_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_143_Q.html'>R 143 -&gt; Q</a></td>
+    <td>4</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (3)</a> </td>
+    <td>[<a href='results/P12883_R_143_Q.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_169_K.html'>R 169 -&gt; K</a></td>
+    <td>4</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_R_169_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_170_K.html'>E 170 -&gt; K</a></td>
+    <td>4</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_E_170_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_Q_193_R.html'>Q 193 -&gt; R</a></td>
+    <td>5</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (5)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_Q_193_R.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_D_239_N.html'>D 239 -&gt; N</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_D_239_N.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_d_239_n.html'>d 239 -&gt; n</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_d_239_n.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_F_244_L.html'>F 244 -&gt; L</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_F_244_L.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_F_247_L.html'>F 247 -&gt; L</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_F_247_L.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_249_Q.html'>R 249 -&gt; Q</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_R_249_Q.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_G_256_E.html'>G 256 -&gt; E</a></td>
+    <td>8</td>
+    <td><span style='background: #ff3f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (5)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native was a glycine which was adopting backbone torsions not allowed for other amino acids.');" 
+onmouseout="return nd();">Glycine (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_G_256_E.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_I_263_T.html'>I 263 -&gt; T</a></td>
+    <td>8</td>
+    <td><span style='background: #ff3f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (7)</a> </td>
+    <td>[<a href='results/P12883_I_263_T.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_L_302_M.html'>L 302 -&gt; M</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_L_302_M.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_K_351_E.html'>K 351 -&gt; E</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_K_351_E.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_A_355_T.html'>A 355 -&gt; T</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_A_355_T.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_A_355_S.html'>A 355 -&gt; S</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_A_355_S.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_D_382_Y.html'>D 382 -&gt; Y</a></td>
+    <td>8</td>
+    <td><span style='background: #ff3f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_D_382_Y.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_403_Q.html'>R 403 -&gt; Q</a></td>
+    <td>8</td>
+    <td><span style='background: #3fff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_R_403_Q.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_403_L.html'>R 403 -&gt; L</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+onmouseout="return nd();">SurfacePhobic (8)</a> </td>
+    <td>[<a href='results/P12883_R_403_L.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_403_W.html'>R 403 -&gt; W</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+onmouseout="return nd();">SurfacePhobic (8)</a> </td>
+    <td>[<a href='results/P12883_R_403_W.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_V_406_M.html'>V 406 -&gt; M</a></td>
+    <td>2</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (2)</a> </td>
+    <td>[<a href='results/P12883_V_406_M.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_V_411_I.html'>V 411 -&gt; I</a></td>
+    <td>4</td>
+    <td><span style='background: #7fff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_V_411_I.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_L_427_M.html'>L 427 -&gt; M</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_L_427_M.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_V_440_M.html'>V 440 -&gt; M</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_V_440_M.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_v_440_m.html'>v 440 -&gt; m</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_v_440_m.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_N_444_S.html'>N 444 -&gt; S</a></td>
+    <td>8</td>
+    <td><span style='background: #ff3f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (7)</a> </td>
+    <td>[<a href='results/P12883_N_444_S.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_453_C.html'>R 453 -&gt; C</a></td>
+    <td>8</td>
+    <td><span style='background: #ff3f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_R_453_C.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_453_L.html'>R 453 -&gt; L</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+onmouseout="return nd();">SurfacePhobic (8)</a> </td>
+    <td>[<a href='results/P12883_R_453_L.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_I_478_N.html'>I 478 -&gt; N</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_I_478_N.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_483_K.html'>E 483 -&gt; K</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_E_483_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_M_493_L.html'>M 493 -&gt; L</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_M_493_L.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_497_D.html'>E 497 -&gt; D</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (8)</a> </td>
+    <td>[<a href='results/P12883_E_497_D.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_G_584_R.html'>G 584 -&gt; R</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native was a glycine which was adopting backbone torsions not allowed for other amino acids.');" 
+onmouseout="return nd();">Glycine (8)</a> </td>
+    <td>[<a href='results/P12883_G_584_R.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_N_602_Y.html'>N 602 -&gt; Y</a></td>
+    <td>8</td>
+    <td><span style='background: #ff3f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (6)</a> </td>
+    <td>[<a href='results/P12883_N_602_Y.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_V_606_M.html'>V 606 -&gt; M</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_V_606_M.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_Y_624_N.html'>Y 624 -&gt; N</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_Y_624_N.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_663_C.html'>R 663 -&gt; C</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_R_663_C.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_663_H.html'>R 663 -&gt; H</a></td>
+    <td>8</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_R_663_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_694_H.html'>R 694 -&gt; H</a></td>
+    <td>8</td>
+    <td><span style='background: #ff7f00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (6)</a> </td>
+    <td>[<a href='results/P12883_R_694_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_G_716_R.html'>G 716 -&gt; R</a></td>
+    <td>6</td>
+    <td><span style='background: #a9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_G_716_R.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_719_Q.html'>R 719 -&gt; Q</a></td>
+    <td>5</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (5)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_R_719_Q.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_719_W.html'>R 719 -&gt; W</a></td>
+    <td>5</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (5)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+onmouseout="return nd();">SurfacePhobic (5)</a> </td>
+    <td>[<a href='results/P12883_R_719_W.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_723_C.html'>R 723 -&gt; C</a></td>
+    <td>5</td>
+    <td><span style='background: #ffcc00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_R_723_C.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_723_G.html'>R 723 -&gt; G</a></td>
+    <td>5</td>
+    <td><span style='background: #ffcc00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_R_723_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_I_736_T.html'>I 736 -&gt; T</a></td>
+    <td>4</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_I_736_T.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_S_738_R.html'>S 738 -&gt; R</a></td>
+    <td>6</td>
+    <td><span style='background: #a9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_S_738_R.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_G_741_R.html'>G 741 -&gt; R</a></td>
+    <td>6</td>
+    <td><span style='background: #ffff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (3)</a> </td>
+    <td>[<a href='results/P12883_G_741_R.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_G_741_W.html'>G 741 -&gt; W</a></td>
+    <td>6</td>
+    <td><span style='background: #a9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (2)</a> </td>
+    <td>[<a href='results/P12883_G_741_W.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_S_748_I.html'>S 748 -&gt; I</a></td>
+    <td>8</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+onmouseout="return nd();">SurfacePhobic (8)</a> </td>
+    <td>[<a href='results/P12883_S_748_I.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_783_H.html'>R 783 -&gt; H</a></td>
+    <td>6</td>
+    <td><span style='background: #54ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (1)</a> </td>
+    <td>[<a href='results/P12883_R_783_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_A_797_T.html'>A 797 -&gt; T</a></td>
+    <td>6</td>
+    <td><span style='background: #a9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native was a glycine which was adopting backbone torsions not allowed for other amino acids.');" 
+onmouseout="return nd();">Glycine (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_A_797_T.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_797_T.html'>R 797 -&gt; T</a></td>
+    <td>6</td>
+    <td><span style='background: #a9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native was a glycine which was adopting backbone torsions not allowed for other amino acids.');" 
+onmouseout="return nd();">Glycine (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_R_797_T.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_M_822_L.html'>M 822 -&gt; L</a></td>
+    <td>6</td>
+    <td><span style='background: #ffff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_M_822_L.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_845_K.html'>R 845 -&gt; K</a></td>
+    <td>10</td>
+    <td><span style='background: #ffcc00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (5)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (6)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (6)</a> </td>
+    <td>[<a href='results/P12883_R_845_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_K_847_E.html'>K 847 -&gt; E</a></td>
+    <td>10</td>
+    <td><span style='background: #99ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (2)</a> </td>
+    <td>[<a href='results/P12883_K_847_E.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_r_858_h.html'>r 858 -&gt; h</a></td>
+    <td>11</td>
+    <td><span style='background: #b9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (4)</a> </td>
+    <td>[<a href='results/P12883_r_858_h.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_869_S.html'>R 869 -&gt; S</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (6)</a> </td>
+    <td>[<a href='results/P12883_R_869_S.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_869_H.html'>R 869 -&gt; H</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (6)</a> </td>
+    <td>[<a href='results/P12883_R_869_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_869_C.html'>R 869 -&gt; C</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (6)</a> </td>
+    <td>[<a href='results/P12883_R_869_C.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_870_H.html'>R 870 -&gt; H</a></td>
+    <td>11</td>
+    <td><span style='background: #ffb900;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (7)</a> </td>
+    <td>[<a href='results/P12883_R_870_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_894_G.html'>E 894 -&gt; G</a></td>
+    <td>11</td>
+    <td><span style='background: #ffb900;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (7)</a> </td>
+    <td>[<a href='results/P12883_E_894_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_A_901_P.html'>A 901 -&gt; P</a></td>
+    <td>11</td>
+    <td><span style='background: #ff8b00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces an amino acid which clashes with its surroundings.');" 
+onmouseout="return nd();">Clash (8)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (6)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a proline when native residue was in a conformation not accessible to proline.');" 
+onmouseout="return nd();">Proline (3)</a> </td>
+    <td>[<a href='results/P12883_A_901_P.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_903_K.html'>E 903 -&gt; K</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (4)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (3)</a> </td>
+    <td>[<a href='results/P12883_E_903_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_D_906_G.html'>D 906 -&gt; G</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a> </td>
+    <td>[<a href='results/P12883_D_906_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_L_908_H.html'>L 908 -&gt; H</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (7)</a> </td>
+    <td>[<a href='results/P12883_L_908_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_L_908_V.html'>L 908 -&gt; V</a></td>
+    <td>11</td>
+    <td><span style='background: #ff5c00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (9)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (7)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduces a hydrophobic amino acid on the surface.');" 
+onmouseout="return nd();">SurfacePhobic (4)</a> </td>
+    <td>[<a href='results/P12883_L_908_V.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_924_K.html'>E 924 -&gt; K</a></td>
+    <td>11</td>
+    <td><span style='background: #5cff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a> </td>
+    <td>[<a href='results/P12883_E_924_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_924_Q.html'>E 924 -&gt; Q</a></td>
+    <td>11</td>
+    <td><span style='background: #5cff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a> </td>
+    <td>[<a href='results/P12883_E_924_Q.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_927_K.html'>E 927 -&gt; K</a></td>
+    <td>11</td>
+    <td><span style='background: #b9ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (4)</a> </td>
+    <td>[<a href='results/P12883_E_927_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_931_G.html'>E 931 -&gt; G</a></td>
+    <td>11</td>
+    <td><span style='background: #2eff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a> </td>
+    <td>[<a href='results/P12883_E_931_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_949_K.html'>E 949 -&gt; K</a></td>
+    <td>11</td>
+    <td><span style='background: #8bff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a charged residue into the protein core.');" 
+onmouseout="return nd();">BuriedCharge (3)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation introduced a hydrophilic residue into the protein core.');" 
+onmouseout="return nd();">CorePhilic (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a> </td>
+    <td>[<a href='results/P12883_E_949_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_1045_C.html'>R 1045 -&gt; C</a></td>
+    <td>&nbsp;</td>
+    <th class='unknown'>Residue 1045 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</th>
+    <td>[<a href='results/P12883_R_1045_C.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_A_1169_S.html'>A 1169 -&gt; S</a></td>
+    <td>&nbsp;</td>
+    <th class='unknown'>Residue 1169 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</th>
+    <td>[<a href='results/P12883_A_1169_S.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_D_1198_G.html'>D 1198 -&gt; G</a></td>
+    <td>&nbsp;</td>
+    <th class='unknown'>Residue 1198 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</th>
+    <td>[<a href='results/P12883_D_1198_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_D_1208_N.html'>D 1208 -&gt; N</a></td>
+    <td>&nbsp;</td>
+    <th class='unknown'>Residue 1208 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</th>
+    <td>[<a href='results/P12883_D_1208_N.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_1356_K.html'>E 1356 -&gt; K</a></td>
+    <td>&nbsp;</td>
+    <th class='unknown'>Residue 1356 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</th>
+    <td>[<a href='results/P12883_E_1356_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_T_1377_M.html'>T 1377 -&gt; M</a></td>
+    <td>&nbsp;</td>
+    <th class='unknown'>Residue 1377 from SwissProt AC (P12883) did not map to any PDB files in PDBSWS so structure is unknown</th>
+    <td>[<a href='results/P12883_T_1377_M.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_1555_G.html'>E 1555 -&gt; G</a></td>
+    <td>10</td>
+    <td><span style='background: #ccff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (4)</a> </td>
+    <td>[<a href='results/P12883_E_1555_G.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_1606_H.html'>R 1606 -&gt; H</a></td>
+    <td>6</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (6)</a> </td>
+    <td>[<a href='results/P12883_R_1606_H.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_1712_Q.html'>R 1712 -&gt; Q</a></td>
+    <td>5</td>
+    <td><span style='background: #ff6500;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (4)</a> </td>
+    <td>[<a href='results/P12883_R_1712_Q.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_E_1752_K.html'>E 1752 -&gt; K</a></td>
+    <td>10</td>
+    <td><span style='background: #ff9900;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was involved in a specific HBond or packing interaction with another protein chain or ligand.');" 
+onmouseout="return nd();">Binding (1)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Mutation disrupts hydrogen bonding.');" 
+onmouseout="return nd();">HBonds (2)</a>  | <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('Native residue was in an interface.');" 
+onmouseout="return nd();">Interface (7)</a> </td>
+    <td>[<a href='results/P12883_E_1752_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_M_1764_K.html'>M 1764 -&gt; K</a></td>
+    <td>10</td>
+    <td><span style='background: #ff0000;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> <a style="text-decoration: none" href="javascript:void(0);" 
+onmouseover="return overlib('The site of the mutation is significantly conserved.');" 
+onmouseout="return nd();">Impact (10)</a> </td>
+    <td>[<a href='results/P12883_M_1764_K.json'>JSON</a>]</td>
+</tr>
+<tr>
+    <td><a href='results/P12883_R_1781_H.html'>R 1781 -&gt; H</a></td>
+    <td>6</td>
+    <td><span style='background: #00ff00;'>&nbsp;&nbsp;&nbsp;&nbsp;</span> No structural effects identified</td>
+    <td>[<a href='results/P12883_R_1781_H.json'>JSON</a>]</td>
+</tr>
+</table>
+<p class='footnote'>Hover over the 'Effects' names for an explanation. Numbers in parentheses are the number of structures in which the effect is observed. The colour (green..red) indicates the fraction of structures having the highest count of observed effects. </p>
+</div> <!-- mutantsummary -->
+<p><a href='results/printpdf.cgi'>[Download PDF]</a></p>
+
+<!-- COMMON FOOTER -->
+
+</body>
+</html>
+
